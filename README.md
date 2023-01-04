@@ -15,12 +15,11 @@
 
 
 # Overview of the project    
-This is my investigation into Neural Networks and the math behind them. The final goal of this project was to approximate a function using the trained neural network.
+This is my investigation into Neural Networks and the math behind them. This neural network is designed to learn the mnist dataset and be able to recognise handwritten digits
 
 
 
 ## Architecture 
-The program and the derivatives I made are designed for a neural network that has one input node, one output node and any number of hidden layer nodes. 
 
 ## Calculating Biases and Weights
 ### Hidden Layer --> Output Layer weight derivatives
