@@ -1,39 +1,34 @@
 
+
 # Table of contents
 - [Table of contents](#table-of-contents)
 - [Overview of the project](#overview-of-the-project)
   - [Architecture](#architecture)
   - [Calculating Biases and Weights](#calculating-biases-and-weights)
-    - [Hidden Layer --> Output Layer weight derivatives](#hidden-layer----output-layer-weight-derivatives)
-    - [Input Layer --> Hidden Layer weight derivatives](#input-layer----hidden-layer-weight-derivatives)
-    - [Output Layer bias derivatives](#output-layer-bias-derivatives)
-    - [Hidden Layer bias derivatives](#hidden-layer-bias-derivatives)
-    - [Input Layer bias derivatives](#input-layer-bias-derivatives)
+    
   - [Prerequisites](#prerequisites)
     - [Modules](#modules)
   - [Things I'm still working on](#things-im-still-working-on)
 
 
 # Overview of the project    
-This is my investigation into Neural Networks and the math behind them. This neural network is designed to learn the mnist dataset and be able to recognise handwritten digits
+This is my investigation into Neural Networks and the math behind them. This neural network is designed to learn the MNIST dataset and be able to recognize handwritten digits. 
+The purpose of this project is to create a neural network without using Keras or Tensorflow and without using dataset manipulation modules like Pandas. In this way, I can try to gain a better knowledge of how neural networks actually work without using an abstracted version similar to what is used in Tensorflow
 
 
 
 ## Architecture 
-
-## Calculating Biases and Weights
-### Hidden Layer --> Output Layer weight derivatives
-![image](https://user-images.githubusercontent.com/80152624/199080179-a7eb1aee-37cf-42f7-a86d-e152ff4550ae.png)
-### Input Layer --> Hidden Layer weight derivatives
-![image](https://user-images.githubusercontent.com/80152624/199084001-873fdfd1-bd4a-4855-a7de-2617e730d1f3.png)
-### Output Layer bias derivatives
-![image](https://user-images.githubusercontent.com/80152624/199084679-c498d4a2-1790-4ba8-8363-d6d813e13ae8.png)
-### Hidden Layer bias derivatives
-![image](https://user-images.githubusercontent.com/80152624/199085280-8f45c141-1d60-44f8-8c5d-1401494ac6b1.png)
-### Input Layer bias derivatives
-![image](https://user-images.githubusercontent.com/80152624/199086279-7e337fec-c83c-404a-ac99-b96ed4dfb370.png)
+- The network will have 784 input nodes (one for every pixel in the 28x28 images)
+- The network will have 10 output nodes (representing every possible output. Ie: 0,1,2,3,4,5,6,7,8,9)
+- The amount of hidden layer nodes is up to you! However it's important to know that the more complex the network is, the higher the possibility for a high accuracy. So keeping this in mind, I might recommend a few hidden layers with a few dozen nodes in each. 
 
 
+## Calculating Bias and Weight Derivatives
+In order to calculate the bias and weight derivatives, you must first calculate the BASE derivative which is used in the calculation of both the biases and the weights
+
+To see how I calculated the base derivatives you can view these photos:
+[Page 1](https://1drv.ms/u/s!AuuhftLL-JDsgpYkdrXvJQGa59dcRg?e=huE1Y8)
+[Page 2](https://1drv.ms/u/s!AuuhftLL-JDsgpYj4t_DphXmlk10Hg?e=o7uOyv)
 
 ## Prerequisites 
 ### Modules
@@ -44,6 +39,6 @@ There is one module used in this program that does not come as default in python
 pip install numpy
 ```
 ## Things I'm still working on
-Although my math is correct for the calculation of biases, I'm struggling to implement them without the network becoming very unreliable. Until this problem is solved, I will only be using weights to train the network. As a result I am restricted to the approximation of linear functions.
-
+There are many variables that affect the network (Amount of epochs, batch size, learning rate, amount of hidden layers, amount of nodes in the hidden layers)
+I'm currently testing how I can improve the accuracy by tweaking these variables. When I find better values for the variables listed, I will update the code above to reflect the highest accuracy I have been able to achieve.  
 
