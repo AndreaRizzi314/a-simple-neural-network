@@ -5,9 +5,9 @@
 - [Overview of the project](#overview-of-the-project)
   - [Architecture](#architecture)
   - [Calculating Biases and Weights](#calculating-biases-and-weights)
-    
   - [Prerequisites](#prerequisites)
     - [Modules](#modules)
+    - [The Dataset](#the-dataset)
   - [Things I'm still working on](#things-im-still-working-on)
 
 
@@ -38,7 +38,15 @@ There is one module used in this program that does not come as default in python
 ```
 pip install numpy
 ```
+### The Dataset
+The csv files containing the training and testing data can be installed through these links:
+
+[Training](https://python-course.eu/data/mnist/mnist_train.csv) (60k training examples)
+[Testing](https://python-course.eu/data/mnist/mnist_test.csv) (10k testing examples)
+
+**Ensure that the dataset files are in the same directory as the Neural Network program**
 ## Things I'm still working on
 There are many variables that affect the network (Amount of epochs, batch size, learning rate, amount of hidden layers, amount of nodes in the hidden layers)
 I'm currently testing how I can improve the accuracy by tweaking these variables. When I find better values for the variables listed, I will update the code above to reflect the highest accuracy I have been able to achieve.  
+(Highest accuracy obtained has been 93%)
 
