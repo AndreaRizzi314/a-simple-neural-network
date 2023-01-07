@@ -120,7 +120,7 @@ def Shuffle(InData, OutData):
 
 
 """
-It is important that the each data point in the input data (InData variable) has an index that corresponds to the label in the OutData variable
+It is important that each data point in the input data (InData variable) has an index that corresponds to the label in the OutData variable
 """
 OutData = []#Labels for the dataset
 InData = np.loadtxt("C:\\Users\\TeenT\\OneDrive\\Desktop\\Neural Network\\mnist_train.csv", delimiter=",")#The dataset that will be inputed into the network
@@ -229,8 +229,8 @@ def Train(InData, OutData, Batches, Epochs, LR):
 #List of all the nodes in the network        
 Nodes = []
 """
-The architecture of the network: 784 input nodes(one for each pixel in the 28x28 image), 16 nodes in the 2nd layer (Hidden Layer),
-16 nodes in the 3rd layer (Hidden Layer) and 10 nodes in the output layer (representing every possible output. Ie: 0,1,2,3,4,5,6,7,8,9)
+The architecture of the network: 784 input nodes(one for each pixel in the 28x28 image), 30 nodes in the 2nd layer (Hidden Layer),
+30 nodes in the 3rd layer (Hidden Layer) and 10 nodes in the output layer (representing every possible output. Ie: 0,1,2,3,4,5,6,7,8,9)
 """
 createNodes([784,30,30,10])
 #Calling the Train function to run 40 epochs with a 32 batch size and a 0.01 learning rate
