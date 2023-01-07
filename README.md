@@ -41,7 +41,7 @@ pip install numpy
 ### The Dataset
 The csv files containing the training and testing data can be installed through these links:
 
-[Training](https://python-course.eu/data/mnist/mnist_train.csv) (60k training examples)
+[Training](https://python-course.eu/data/mnist/mnist_train.csv) (60k training examples)\
 [Testing](https://python-course.eu/data/mnist/mnist_test.csv) (10k testing examples)
 
 **Ensure that the dataset files are in the same directory as the Neural Network program**
