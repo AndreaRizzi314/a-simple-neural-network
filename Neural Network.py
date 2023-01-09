@@ -123,7 +123,7 @@ def Shuffle(InData, OutData):
 It is important that each data point in the input data (InData variable) has an index that corresponds to the label in the OutData variable
 """
 OutData = []#Labels for the dataset
-InData = np.loadtxt("C:\\Users\\TeenT\\OneDrive\\Desktop\\Neural Network\\mnist_train.csv", delimiter=",")#The dataset that will be inputed into the network
+InData = np.loadtxt(".\\mnist_train.csv", delimiter=",")#The dataset that will be inputed into the network
 
 
 ##################################################
@@ -253,7 +253,7 @@ def predict(data):
 Manipulation of the testing data
 """
 TestOutData = []
-TestInData = np.loadtxt("C:\\Users\\TeenT\\OneDrive\\Desktop\\Neural Network\\mnist_test .csv", delimiter=",")
+TestInData = np.loadtxt(".\\mnist_test .csv", delimiter=",")
 
 for data in TestInData:
     TestOutData.append([int(data[0])])
