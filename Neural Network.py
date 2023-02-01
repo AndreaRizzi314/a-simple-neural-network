@@ -2,8 +2,25 @@ import numpy as np
 import random
 import threading 
 import time
-
+import copy
 class Network():
+    architecture = []
+    #List of all the nodes in the network 
+    Nodes = []
+    #Number of layers in the network
+    layers = int()
+    #Number of nodes in the input layer
+    input = int()
+    #Total number of nodes in the network
+    total = int()
+    #Layer Start is a list of node ID's that represent the beginning of each layer 
+    LayerStart = []
+    #Cost/Loss of the network
+    cost = int()
+    #Changes of the biases and weights
+    WeightDerivativeList = []
+    BiasDerivativeList = []
+    
     def __init__(self, Function):
         self.Function = Function
     
@@ -45,18 +62,16 @@ class Network():
         z = float()#Value of the node before activation function
     
     
-    global Nodes
-    #List of all the nodes in the network 
-    Nodes = []
+    
+   
+    
     #Function for creating the nodes based on the desired architecture 
     def createNodes(self, _architecture):
-        
-        global total, input, layers, architecture
-        architecture = _architecture#List of the amount of nodes in each layer 
-        layers = len(architecture)#number of layers in the network
-        input = architecture[0]#Amount of nodes in the input layer
-        total = 0
-        for i in architecture: total+=i#Total number of nodes in the network
+        self.architecture = _architecture#List of the amount of nodes in each layer 
+        self.layers = len(self.architecture)#number of layers in the network
+        self.input = self.architecture[0]#Amount of nodes in the input layer
+        self.total = 0
+        for i in self.architecture: self.total+=i#Total number of nodes in the network
 
 
         NodeId = 0
@@ -64,7 +79,7 @@ class Network():
         This loop creates all the nodes required in the architecture of the network
         and gives them all their respective attributes 
         """
-        for index,layer in enumerate(architecture):
+        for index,layer in enumerate(self.architecture):
             for i in range(layer):
                 newNode = self.node()
                 newNode.id = NodeId#Every node has a unique identifier in order to allow me to change attributes of a specific node
@@ -75,31 +90,28 @@ class Network():
                 if index == 0:
                     newNode.PreviousNodes = 0#If the node is in the input layer it will have no Nodes before it
                 else:
-                    newNode.PreviousNodes = architecture[index-1]
+                    newNode.PreviousNodes = self.architecture[index-1]
                     
                     """
                     Identifies how many nodes are in the previous layer↓↓
                     """
                     top = 0
                     for i in range(index-1, -1, -1):
-                        top += architecture[i]
-                    bottom = top-architecture[index-1]
+                        top += self.architecture[i]
+                    bottom = top-self.architecture[index-1]
                     newNode.PrevNodeId = [i for i in range(bottom, top)]
                 
                 
-                newNode.PrevWeightVal = [random.random()-0.5 for i in range(architecture[index-1])]#Weight values are initialized to be a random number between -0.5 and 0.5 
-                Nodes.append(newNode)#All nodes that are created are appended to a list that will contain every node in the network. The ID's of the nodes are equal to the index they have in the list
+                newNode.PrevWeightVal = [random.random()-0.5 for i in range(self.architecture[index-1])]#Weight values are initialized to be a random number between -0.5 and 0.5 
+                self.Nodes.append(newNode)#All nodes that are created are appended to a list that will contain every node in the network. The ID's of the nodes are equal to the index they have in the list
         
-        """
-        Layer Start is a list of node ID's that represent the beginning of each layer
-        """
-        global LayerStart
-        LayerStart = [] 
+        
+        self.LayerStart = [] 
         PrevLayer = -1
-        for i in range(len(Nodes)):
-            if Nodes[i].layer != PrevLayer:
-                LayerStart.append(i)
-                PrevLayer = Nodes[i].layer
+        for i in range(len(self.Nodes)):
+            if self.Nodes[i].layer != PrevLayer:
+                self.LayerStart.append(i)
+                PrevLayer = self.Nodes[i].layer
 
     """
     When the input data is fed into the input nodes, the values of all the rest of the nodes in the network will change. The calculation of these new values
@@ -107,10 +119,10 @@ class Network():
     """
     def ForwardPropagate(self, Function, Nodes):
         
-        for i in range(input):
+        for i in range(self.input):
             Nodes[i].a = self.ActivationFunction(Function, Nodes[i].z)
         
-        for i in range(input, total):
+        for i in range(self.input, self.total):
             Nodes[i].z = Nodes[i].bias
             for y in range(Nodes[i].PreviousNodes):
 
@@ -136,25 +148,26 @@ class Network():
   
     #The main Train function↓
     def Train(self, InData, OutData, Batches, Epochs, LR):
-        global cost
-        cost = 0#Cost is initialized to 0
-        global WeightDerivativeList, BiasDerivativeList, baseDerivatives
-        WeightDerivativeList = []#List of all the weight derivatives
-        BiasDerivativeList = []#List of all the bias derivatives
-        baseDerivatives = []#List of the base derivatives 
+        
+        self.cost = 0#Cost is initialized to 0
+        
+        self.WeightDerivativeList = []#List of all the weight derivatives
+        self.BiasDerivativeList = []#List of all the bias derivatives
+        
         
         #Initialization of the lists above
-        for i in range(len(Nodes)):
-            BiasDerivativeList.append(0)
-            baseDerivatives.append(0)
-            WeightDerivativeList.append([])
-        for i in range(input, len(Nodes)):
-            for j in range(Nodes[i].PreviousNodes):
-                WeightDerivativeList[i].append(0)
+        for i in range(len(self.Nodes)):
+            self.BiasDerivativeList.append(0)
+            self.WeightDerivativeList.append([])
+        for i in range(self.input, len(self.Nodes)):
+            for j in range(self.Nodes[i].PreviousNodes):
+                self.WeightDerivativeList[i].append(0)
         
-        def Learn(Data_index, Nodes, LayerStart, InData, OutData, architecture):
-            
-            global WeightDerivativeList, BiasDerivativeList, baseDerivatives
+        def Learn(self, Data_index, Nodes, LayerStart, InData, OutData, architecture, WeightDerivativeList, BiasDerivativeList):
+            baseDerivatives = []#List of the base derivatives
+            #Initialization of the baseDerivative list
+            for i in range(len(self.Nodes)):
+                baseDerivatives.append(0)
             
             #Input data is fed into the network ↓
             for i in range(len(InData[Data_index])):
@@ -166,8 +179,8 @@ class Network():
             
             #Cost Calculation
             for i in range(architecture[-1]):
-                global cost
-                cost += ((OutData[Data_index][i]-Nodes[LayerStart[-1]+i].a))**2
+                
+                self.cost += ((OutData[Data_index][i]-Nodes[LayerStart[-1]+i].a))**2
             
             #####################################################################################
             """
@@ -176,10 +189,10 @@ class Network():
             
             for NODE in range(len(Nodes)-1, -1 ,-1):
                 
-                if Nodes[NODE].layer == layers-1:
+                if Nodes[NODE].layer == self.layers-1:
                     
                 
-                    baseDerivatives[NODE]= -2*(OutData[Data_index][NODE-LayerStart[layers-1]]-Nodes[NODE].a)*(self.ActivationFunctionP(Function, Nodes[NODE].z))
+                    baseDerivatives[NODE]= -2*(OutData[Data_index][NODE-LayerStart[self.layers-1]]-Nodes[NODE].a)*(self.ActivationFunctionP(Function, Nodes[NODE].z))
                     
                 else:
                     baseDerivatives[NODE] = 0
@@ -200,7 +213,7 @@ class Network():
         #Main loop for the training
         for Epoch in range(Epochs):
             
-            cost = 0#Cost is reset to 0
+            self.cost = 0#Cost is reset to 0
             self.Shuffle(InData, OutData)#Data is shuffled 
             threads = []
             for Data_index in range(len(InData)):
@@ -213,26 +226,26 @@ class Network():
                     for i in threads:
                         i.join()
                     
-                    for NODE in range(len(Nodes)):
-                        Nodes[NODE].bias -= BiasDerivativeList[NODE] * LR / Batches
-                        BiasDerivativeList[NODE] = 0
+                    for NODE in range(len(self.Nodes)):
+                        self.Nodes[NODE].bias -= self.BiasDerivativeList[NODE] * LR / Batches
+                        self.BiasDerivativeList[NODE] = 0
                         
-                        for i in range(Nodes[NODE].PreviousNodes):
-                            Nodes[NODE].PrevWeightVal[i] -= WeightDerivativeList[NODE][i] * LR / Batches
-                            WeightDerivativeList[NODE][i] = 0
+                        for i in range(self.Nodes[NODE].PreviousNodes):
+                            self.Nodes[NODE].PrevWeightVal[i] -= self.WeightDerivativeList[NODE][i] * LR / Batches
+                            self.WeightDerivativeList[NODE][i] = 0
                     threads = []
                     
                 else:
     
-                    TempNodes = Nodes.copy()
-                    x = threading.Thread(target=Learn ,args=(Data_index,TempNodes, LayerStart, InData, OutData, architecture))
+                    TempNodes = copy.deepcopy(self.Nodes)
+                    x = threading.Thread(target=Learn ,args=(self,Data_index,TempNodes, self.LayerStart, InData, OutData, self.architecture, self.WeightDerivativeList, self.BiasDerivativeList ))
                     threads.append(x)
             
             #finding the average cost
-            cost /= len(InData)
+            self.cost /= len(InData)
             
-            cost = '{0:.30f}'.format(cost)
-            print(f"Cost: {cost} (Epoch {Epoch})")
+            self.cost = '{0:.30f}'.format(self.cost)
+            print(f"Cost: {self.cost} (Epoch {Epoch})")
 
     
     """
@@ -240,13 +253,13 @@ class Network():
     is fed into the network after it has been trained 
     """
     def predict(self, data):
-        for i in range(input):
-            Nodes[i].z = data[i]
-        self.ForwardPropagate(Function, Nodes)
+        for i in range(self.input):
+            self.Nodes[i].z = data[i]
+        self.ForwardPropagate(Function, self.Nodes)
         
         OutputNodeValues = []
         for i in range(10):
-            OutputNodeValues.append(Nodes[LayerStart[-1]+i].z)
+            OutputNodeValues.append(self.Nodes[self.LayerStart[-1]+i].z)
         return OutputNodeValues
            
 
@@ -286,7 +299,7 @@ for index, data_point in enumerate(InData):
         InData[index][index2] /= 255
         
 
-InData = InData[0:30000]#The mnist dataset is quite long so here i can decide how much of the dataset i want to use. Eg: 1000 out of the 60000
+InData = InData[0:50]#The mnist dataset is quite long so here i can decide how much of the dataset i want to use. Eg: 1000 out of the 60000
 ##################################################
 
 
@@ -312,7 +325,7 @@ t2_start = time.perf_counter()
 Manipulation of the testing data
 """
 TestOutData = []
-TestInData = np.loadtxt(".\\mnist_test .csv", delimiter=",")
+TestInData = np.loadtxt(".\\mnist_test.csv", delimiter=",")
 
 for data in TestInData:
     TestOutData.append([int(data[0])])
@@ -355,3 +368,4 @@ Accuracy /= len(TestInData)
 Accuracy *= 100
 print(f"The Network has a {Accuracy}% Accuracy")
 print(f"Network has been training for {t2_start-t1_start} seconds")
+
